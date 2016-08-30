@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "sourceMap": true
+    },
+    "compileOnSave": true,
+    "exclude": [
+        "node_modules"
+    ],
+    "files": [
+        "./typings/tsd.d.ts",
+        "./index.ts"
+    ]
+}
