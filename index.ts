@@ -18,11 +18,13 @@ function handleEndOfRequest(logFile: string, transactionId: number, data: string
     log(logFile, transactionId, data);
 }
 
-function createMissingFolders(folder: string) {
-    if (!fs.existsSync(folder)) {
-        fs.mkdir(folder, (err) => {
-            console.log(err);
-        });
+function createMissingFolders(folder: string[]) {
+    for (let i = 0; i < folder.length; i++) {
+        if (!fs.existsSync(folder[i])) {
+            fs.mkdir(folder[i], (err) => {
+                console.log(err);
+            });
+        }
     }
 }
 
@@ -32,11 +34,10 @@ function handle(req: http.IncomingMessage, resp: http.ServerResponse) {
     let now = new Date();
 
     let folder1 = "logs/";
-    let folder2 = folder1 + now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate() + "/";
-    let logFile = folder2 + now.getHours() + "-" + now.getMinutes() + "-" + now.getSeconds() + "-" + now.getMilliseconds() + ".log";
+    let folder2 = folder1 + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + "/";
+    let logFile = folder2 + now.getHours() + "-" + now.getMinutes() + "-" + now.getSeconds() + "." + now.getMilliseconds() + ".log";
 
-    createMissingFolders(folder1);
-    createMissingFolders(folder2);
+    createMissingFolders(new Array(folder1, folder2));
 
     let log2 = (data2) => (log(logFile, transactionId, data2));
 
@@ -65,4 +66,4 @@ let httpsOptions : https.ServerOptions = {
 }
 
 http.createServer(handle).listen(80);
-https.createServer(httpsOptions, handle).listen(443);
+//https.createServer(httpsOptions, handle).listen(443);
