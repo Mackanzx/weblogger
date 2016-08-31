@@ -28,7 +28,7 @@ function createMissingFolders(folder: string[]) {
     }
 }
 
-function handle(req: http.IncomingMessage, resp: http.ServerResponse) {
+function handleNastyRequest(req: http.IncomingMessage, resp: http.ServerResponse) {
     let data = "";
     let transactionId = Math.random();
     let now = new Date();
@@ -61,9 +61,31 @@ function handle(req: http.IncomingMessage, resp: http.ServerResponse) {
     req.on('end', handleIt);
 }
 
-let httpsOptions : https.ServerOptions = {
-    // TODO
+http.createServer(handleNastyRequest).listen(80);
+
+function handleAdminRequest(req: http.IncomingMessage, resp: http.ServerResponse) {
+    if (req.url === "" || req.url === "/") {
+        let logDays = fs.readdirSync("logs/");
+        resp.write("<html><body>");
+        logDays.forEach((s) => resp.write("<a href=\"" + s + "\">" + s + "</a>"));
+        resp.end("</body></html>");
+        return;
+    } else {
+        let reqFolder = "./logs/" + req.url;
+        if (fs.existsSync(reqFolder)) {
+            let logFiles = fs.readdirSync(reqFolder);
+            if (logFiles.length > 0) {
+                resp.setHeader("Content-Type", "application/json");
+                let obj = {};
+                logFiles.forEach((s) => obj[s] = fs.readFileSync(reqFolder + "/" + s, "utf8"));
+                resp.end(JSON.stringify(obj, null, 3));
+                return;
+            }
+        }
+        resp.statusCode = 404;
+        resp.end();
+        return;
+    }
 }
 
-http.createServer(handle).listen(80);
-//https.createServer(httpsOptions, handle).listen(443);
+http.createServer(handleAdminRequest).listen(8080);
