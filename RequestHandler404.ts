@@ -9,7 +9,11 @@ function getLogFolder(date: Date): string {
 }
 
 function getLogFile(date: Date): string {
-    return date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds() + "." + date.getMilliseconds() + ".log"
+    let h = "" + date.getHours();
+    if (h.length == 1) {
+        h = "0" + h;
+    }
+    return h + "H.log"
 }
 
 export class RequestHandler404 implements IRequestHandler {
@@ -28,9 +32,10 @@ export class RequestHandler404 implements IRequestHandler {
             fs.mkdirsSync(folder);
         }
 
-        log(logFile, transactionId, "URL-PATH: " + req.url);
-        log(logFile, transactionId, "METHOD: " + req.method);
-        log(logFile, transactionId, "HEADERS: " + JSON.stringify(req.headers, null, 3));
+        const logReq = (data) => log(logFile, data, transactionId, new Date());
+        logReq("URL-PATH: " + req.url);
+        logReq("METHOD: " + req.method);
+        logReq("HEADERS: " + JSON.stringify(req.headers, null, 3));
 
         req.on('data', (chunk) => {
             data += chunk;
@@ -38,7 +43,7 @@ export class RequestHandler404 implements IRequestHandler {
 
         const handleEndOfRequest = () => {
             if (data)
-                log(logFile, transactionId, "DATA: " + data);
+                logReq("DATA: " + data);
             resp.statusCode = 404;
             resp.end();
         };
