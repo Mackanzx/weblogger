@@ -6,7 +6,10 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "node/node.d.ts": {
-      "commit": "103d66654792617c545a55cb038cbb14bf4d864b"
+      "commit": "084e55916674ff7128722bf72150aa55acea08d9"
+    },
+    "fs-extra/fs-extra.d.ts": {
+      "commit": "084e55916674ff7128722bf72150aa55acea08d9"
     }
   }
 }
