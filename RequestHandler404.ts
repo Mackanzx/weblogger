@@ -6,14 +6,15 @@ export class RequestHandler404 implements rh.RequestHandler {
     constructor() {
         console.log("RequestHandler404 Created.");
     }
+
     handle(req: http.IncomingMessage, resp: http.ServerResponse): void {
         let data = "";
-        let transactionId = Math.random();
-        let now = new Date();
+        const transactionId = Math.random();
+        const now = new Date();
 
-        let folder1 = "./logs/";
-        let folder2 = folder1 + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + "/";
-        let logFile = folder2 + now.getHours() + "-" + now.getMinutes() + "-" + now.getSeconds() + "." + now.getMilliseconds() + ".log";
+        const folder1 = "./logs/";
+        const folder2 = folder1 + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + "/";
+        const logFile = folder2 + now.getHours() + "-" + now.getMinutes() + "-" + now.getSeconds() + "." + now.getMilliseconds() + ".log";
 
         createMissingFolders([folder1, folder2]);
 
@@ -28,7 +29,7 @@ export class RequestHandler404 implements rh.RequestHandler {
             data += chunk;
         });
 
-        let handleEndOfRequest = () => {
+        const handleEndOfRequest = () => {
             if (data)
                 log(logFile, transactionId, data);
             resp.statusCode = 404;

@@ -10,7 +10,7 @@ export class RequestHandlerAdmin implements rh.RequestHandler {
         // TODO: Save real IP of blocked sites to be able to enable proxying to them through an admin request?
         let requestHandled = false;
         if (!req.url || req.url === "/") {
-            let logDays = fs.readdirSync("./logs/");
+            const logDays = fs.readdirSync("./logs/");
             resp.write("<html><body>");
             logDays.forEach((s) => resp.write("<a href=\"" + s + "\">" + s + "</a><br>"));
             resp.end("</body></html>");
@@ -18,7 +18,7 @@ export class RequestHandlerAdmin implements rh.RequestHandler {
         } else {
             let reqFolder = "./logs/" + req.url;
             if (fs.existsSync(reqFolder)) {
-                let logFiles = fs.readdirSync(reqFolder);
+                const logFiles = fs.readdirSync(reqFolder);
                 if (logFiles.length) {
                     let str = "";
                     logFiles.forEach((s) => str += "--[" + s + "]--\n" + fs.readFileSync(reqFolder + "/" + s, "utf8") + "\n");
