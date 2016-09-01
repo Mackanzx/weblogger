@@ -9,13 +9,3 @@ export function log(logFile: string, transactionId: number, data: any) {
         }
     });
 }
-
-export function createMissingFolders(folders: string[]) {
-    folders.forEach((folder) => {
-        if (!fs.existsSync(folder)) {
-            fs.mkdir(folder, (err) => {
-                console.log(err);
-            });
-        }
-    });
-}

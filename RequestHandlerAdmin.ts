@@ -1,8 +1,16 @@
 import * as http from "http";
 import * as fs from "fs";
-import * as rh from "./RequestHandler"
+import {IRequestHandler} from "./IRequestHandler"
 
-export class RequestHandlerAdmin implements rh.RequestHandler {
+function getLinkTo(str: string) {
+    return "<a href=\"" + str + "\">" + str + "</a><br>";
+}
+
+function getLogEntryFor(folder: string, str: string) {
+    return "--[" + str + "]--\n" + fs.readFileSync(folder + "/" + str, "utf8") + "\n";
+}
+
+export class RequestHandlerAdmin implements IRequestHandler {
     constructor() {
         console.log("RequestHandlerAdmin Created.");
     }
@@ -12,7 +20,7 @@ export class RequestHandlerAdmin implements rh.RequestHandler {
         if (!req.url || req.url === "/") {
             const logDays = fs.readdirSync("./logs/");
             resp.write("<html><body>");
-            logDays.forEach((s) => resp.write("<a href=\"" + s + "\">" + s + "</a><br>"));
+            logDays.forEach((s) => resp.write(getLinkTo(s)));
             resp.end("</body></html>");
             requestHandled = true;
         } else {
@@ -21,7 +29,7 @@ export class RequestHandlerAdmin implements rh.RequestHandler {
                 const logFiles = fs.readdirSync(reqFolder);
                 if (logFiles.length) {
                     let str = "";
-                    logFiles.forEach((s) => str += "--[" + s + "]--\n" + fs.readFileSync(reqFolder + "/" + s, "utf8") + "\n");
+                    logFiles.forEach((s) => str += getLogEntryFor(reqFolder, s));
                     resp.end(str);
                     requestHandled = true;
                 }
